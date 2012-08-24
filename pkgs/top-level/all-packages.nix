@@ -3809,6 +3809,8 @@ let
 
   glib = callPackage ../development/libraries/glib/2.30.x.nix { };
 
+  glib_2_32 = callPackage ../development/libraries/glib/2.32.x.nix { };
+
   glibmm = callPackage ../development/libraries/glibmm/2.30.x.nix { };
 
   glib_networking = callPackage ../development/libraries/glib-networking {};
