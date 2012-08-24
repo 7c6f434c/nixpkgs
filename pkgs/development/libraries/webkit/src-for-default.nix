@@ -1,9 +1,9 @@
 rec {
-   version="1.6.3";
-   name="webkit-1.6.3";
-   hash="1hvph13ak7a85qmj1ikanwxf2nn53m5f6a50j627lp49db7dpl0j";
-   url="http://webkitgtk.org/webkit-1.6.3.tar.xz";
-   advertisedUrl="http://webkitgtk.org/webkit-1.6.3.tar.xz";
+   version="1.8.3";
+   name="webkit-1.8.3";
+   hash="1ry99jkj2dl7xg229xk42bkiq51dcvnwvls2y4wfs6pnd9ijv85d";
+   url="http://webkitgtk.org/releases/webkit-1.8.3.tar.xz";
+   advertisedUrl="http://webkitgtk.org/releases/webkit-1.8.3.tar.xz";
   
   
 }
