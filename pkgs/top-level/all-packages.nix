@@ -3835,6 +3835,9 @@ let
   gtkmm3 = callPackage ../development/libraries/gtkmm/3.2.x.nix { };
 
   gtk3 = lowPrio (callPackage ../development/libraries/gtk+/3.2.x.nix { });
+  gtk3_4 = lowPrio (callPackage ../development/libraries/gtk+/3.4.x.nix { 
+    glib = glib_2_32;
+  });
 
   gtkmozembedsharp = callPackage ../development/libraries/gtkmozembed-sharp {
     gtksharp = gtksharp2;
@@ -4931,7 +4934,7 @@ let
       inherit (gnome) gtkdoc libsoup;
       inherit atk pango;
       glib = glib_2_32;
-      gtk = gtk3;
+      gtk = gtk3_4;
       inherit freetype fontconfig gettext gperf curl
         libjpeg libtiff libxml2 libxslt sqlite
         icu cairo intltool automake libtool
