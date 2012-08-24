@@ -4929,7 +4929,8 @@ let
   webkit =
     builderDefsPackage ../development/libraries/webkit {
       inherit (gnome) gtkdoc libsoup;
-      inherit atk pango glib;
+      inherit atk pango;
+      glib = glib_2_32;
       gtk = gtk3;
       inherit freetype fontconfig gettext gperf curl
         libjpeg libtiff libxml2 libxslt sqlite
