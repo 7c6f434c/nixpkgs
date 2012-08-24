@@ -3817,15 +3817,32 @@ let
 
   atk = callPackage ../development/libraries/atk/2.2.x.nix { };
 
+  atk_2_4 = callPackage ../development/libraries/atk/2.4.x.nix {
+    glib = glib_2_32;
+  };
+
   atkmm = callPackage ../development/libraries/atkmm/2.22.x.nix { };
 
   cairo = callPackage ../development/libraries/cairo { };
 
+  cairo_1_12 = callPackage ../development/libraries/cairo/1.12.x.nix { 
+    glib = glib_2_32;
+  };
+
   pango = callPackage ../development/libraries/pango/1.29.x.nix { };
+
+  pango_1_30 = callPackage ../development/libraries/pango/1.30.x.nix {
+    glib = glib_2_32;
+    cairo = cairo_1_12;
+  };
 
   pangomm = callPackage ../development/libraries/pangomm/2.28.x.nix { };
 
   gdk_pixbuf = callPackage ../development/libraries/gdk-pixbuf/2.24.x.nix { };
+
+  gdk_pixbuf_2_26 = callPackage ../development/libraries/gdk-pixbuf/2.26.x.nix { 
+    glib = glib_2_32;
+  };
 
   gtk2 = callPackage ../development/libraries/gtk+/2.24.x.nix { };
 
@@ -3837,6 +3854,10 @@ let
   gtk3 = lowPrio (callPackage ../development/libraries/gtk+/3.2.x.nix { });
   gtk3_4 = lowPrio (callPackage ../development/libraries/gtk+/3.4.x.nix { 
     glib = glib_2_32;
+    pango = pango_1_30;
+    atk = atk_2_4;
+    gdk_pixbuf = gdk_pixbuf_2_26;
+    cairo = cairo_1_12;
   });
 
   gtkmozembedsharp = callPackage ../development/libraries/gtkmozembed-sharp {
@@ -4932,12 +4953,14 @@ let
   webkit =
     builderDefsPackage ../development/libraries/webkit {
       inherit (gnome) gtkdoc libsoup;
-      inherit atk pango;
+      atk = atk_2_4;
       glib = glib_2_32;
       gtk = gtk3_4;
+      cairo = cairo_1_12;
+      pango = pango_1_30;
       inherit freetype fontconfig gettext gperf curl
         libjpeg libtiff libxml2 libxslt sqlite
-        icu cairo intltool automake libtool
+        icu intltool automake libtool
         pkgconfig autoconf bison libproxy enchant
         python ruby which flex geoclue;
       inherit gstreamer gst_plugins_base gst_ffmpeg
