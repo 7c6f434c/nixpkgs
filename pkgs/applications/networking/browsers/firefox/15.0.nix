@@ -159,9 +159,9 @@ rec {
                 chmod a+x "$out/bin/$(basename "$i")"
             fi;
         done;
-	cd "$out/lib/firefox-*"
+	cd "$out/lib/"firefox-*
 	rm firefox
-	echo -e '#!${stdenv.shell}\n${xulrunner}/bin/xulrunner "'"$PWD"'/applicaton.ini" "$@"' > firefox
+	echo -e '#!${stdenv.shell}\n${xulrunner}/bin/xulrunner "'"$PWD"'/application.ini" "$@"' > firefox
 	chmod a+x firefox
       ''; # */
 
