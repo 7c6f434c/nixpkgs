@@ -7409,6 +7409,12 @@ let
 
   openjump = callPackage ../applications/misc/openjump { };
 
+  apache_openoffice = callPackage ../applications/office/openoffice/aoo.nix {
+    inherit (perlPackages) ArchiveZip;
+    inherit (gnome) GConf ORBit2 libIDL gnome_vfs;
+    inherit (firefoxPkgs) xulrunner;
+  };
+
   openoffice = callPackage ../applications/office/openoffice {
     inherit (perlPackages) ArchiveZip CompressZlib;
     inherit (gnome) GConf ORBit2;
