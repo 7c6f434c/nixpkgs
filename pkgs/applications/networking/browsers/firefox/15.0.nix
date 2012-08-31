@@ -137,7 +137,7 @@ rec {
     buildInputs =
       [ pkgconfig gtk perl zip libIDL libjpeg zlib cairo bzip2 python
         dbus dbus_glib pango freetype fontconfig alsaLib nspr nss libnotify
-        xlibs.pixman yasm mesa sqlite file unzip
+        xlibs.pixman yasm mesa sqlite file unzip pysqlite
       ];
 
     propagatedBuildInputs = [xulrunner];
