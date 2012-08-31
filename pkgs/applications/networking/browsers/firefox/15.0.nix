@@ -66,14 +66,8 @@ rec {
 
     enableParallelBuilding = true;
       
-    # Hack to work around make's idea of -lbz2 dependency
     preConfigure =
       ''
-        find . -name Makefile.in -execdir sed -i '{}' -e '1ivpath %.so ${
-          stdenv.lib.concatStringsSep ":" 
-            (map (s : s + "/lib") (buildInputs ++ [stdenv.gcc.libc]))
-        }' ';'
-
         export NIX_LDFLAGS="$NIX_LDFLAGS -L$out/lib/xulrunner-${xulVersion}"
 
         mkdir ../objdir
@@ -81,26 +75,15 @@ rec {
         configureScript=../mozilla-release/configure
       ''; # */
 
-    # !!! Temporary hack.
-    preBuild =
-      ''
-        export NIX_ENFORCE_PURITY=
-      '';
-
-    installFlags = "SKIP_GRE_REGISTRATION=1";
+    #installFlags = "SKIP_GRE_REGISTRATION=1";
 
     postInstall = ''
-      # Fix some references to /bin paths in the Xulrunner shell script.
-      substituteInPlace $out/bin/xulrunner \
-          --replace /bin/pwd "$(type -tP pwd)" \
-          --replace /bin/ls "$(type -tP ls)"
-
       # Fix run-mozilla.sh search
       libDir=$(cd $out/lib && ls -d xulrunner-[0-9]*)
       echo libDir: $libDir
       test -n "$libDir"
       cd $out/bin
-      mv xulrunner ../lib/$libDir/
+      rm xulrunner
 
       for i in $out/lib/$libDir/*; do 
           file $i;
@@ -112,7 +95,7 @@ rec {
       for i in $out/lib/$libDir/*.so; do
           patchelf --set-rpath "$(patchelf --print-rpath "$i"):$out/lib/$libDir" $i || true
       done
-      for i in $out/lib/$libDir/plugin-container; do
+      for i in $out/lib/$libDir/{plugin-container,xulrunner,xulrunner-stub}; do
           wrapProgram $i --prefix LD_LIBRARY_PATH ':' "$out/lib/$libDir"
       done
       rm -f $out/bin/run-mozilla.sh
