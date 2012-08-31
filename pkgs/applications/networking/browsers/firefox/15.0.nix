@@ -134,6 +134,10 @@ rec {
       ++ commonConfigureFlags
       ++ stdenv.lib.optional enableOfficialBranding "--enable-official-branding";
 
+    makeFlags = [
+      "SYSTEM_LIBXUL=1"
+    ];
+
     # Hack to work around make's idea of -lbz2 dependency
     preConfigure =
       ''
@@ -155,6 +159,10 @@ rec {
                 chmod a+x "$out/bin/$(basename "$i")"
             fi;
         done;
+	cd "$out/lib/firefox-*"
+	rm firefox
+	echo -e '#!${stdenv.shell}\n${xulrunner}/bin/xulrunner "'"$PWD"'/applicaton.ini" "$@"' > firefox
+	chmod a+x firefox
       ''; # */
 
     meta = {
