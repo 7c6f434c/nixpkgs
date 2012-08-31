@@ -112,7 +112,7 @@ rec {
       for i in $out/lib/$libDir/*.so; do
           patchelf --set-rpath "$(patchelf --print-rpath "$i"):$out/lib/$libDir" $i || true
       done
-      for i in $out/lib/$libDir/{plugin-container}; do
+      for i in $out/lib/$libDir/plugin-container; do
           wrapProgram $i --prefix LD_LIBRARY_PATH ':' "$out/lib/$libDir"
       done
       rm -f $out/bin/run-mozilla.sh
