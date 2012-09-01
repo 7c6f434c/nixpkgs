@@ -22,6 +22,8 @@ rec {
     ];
 
   configureFlags = [
+    "--help"
+
     "--enable-3D-transforms"
     "--enable-web-sockets"
     "--enable-web-timing"

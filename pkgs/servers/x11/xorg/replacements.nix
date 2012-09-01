@@ -1,4 +1,4 @@
-{stdenv, fetchurl, xorg, automake, autoconf, libtool, makeOverridable}:
+{stdenv, fetchurl, xorg, automake, autoconf, libtool, pkgconfig, perl, makeOverridable}:
 {
   xf86videoati = {src, suffix}: 
   makeOverridable stdenv.mkDerivation {
@@ -18,4 +18,15 @@
         ./autogen.sh
       '';
   };
+
+  pixman_0_26 = (stdenv.mkDerivation ({
+    name = "pixman-0.26.2";
+    builder = ./builder.sh;
+    src = fetchurl {
+      url = mirror://xorg/individual/lib/pixman-0.26.2.tar.bz2;
+      sha256 = "0z34jb75wpbyj3gxn34icd8j81fk5d6s6qnwp2ncz7m8icf6afqr";
+    };
+    buildInputs = [pkgconfig ];
+    buildNativeInputs = [perl ];
+  })) // {inherit perl ;};
 }

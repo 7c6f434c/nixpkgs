@@ -3827,6 +3827,7 @@ let
 
   cairo_1_12 = callPackage ../development/libraries/cairo/1.12.x.nix { 
     glib = glib_2_32;
+    pixman = xorgReplacements.pixman_0_26;
   };
 
   pango = callPackage ../development/libraries/pango/1.29.x.nix { };
