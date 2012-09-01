@@ -4697,6 +4697,7 @@ let
   polkit_0_107 = callPackage ../development/libraries/polkit/0.107.nix { 
     glib = glib_2_32;
     gobjectIntrospection = gobjectIntrospection_1_32;
+    spidermonkey = spidermonkey_185;
   };
 
   polkit_qt_1 = callPackage ../development/libraries/polkit-qt-1 { };

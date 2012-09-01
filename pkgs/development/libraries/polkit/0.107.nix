@@ -1,5 +1,5 @@
 { stdenv, fetchurl, pkgconfig, glib, expat, pam, intltool, gettext
-, gobjectIntrospection
+, gobjectIntrospection, spidermonkey, perl
 , useSystemd ? false, systemd ? null }:
 
 let
@@ -24,8 +24,10 @@ stdenv.mkDerivation rec {
   };
 
   buildInputs =
-    [ pkgconfig glib expat pam intltool gobjectIntrospection ]
+    [ pkgconfig glib expat pam intltool gobjectIntrospection spidermonkey ]
     ++ stdenv.lib.optional useSystemd systemd;
+
+  buildNativeInputs = [perl];
 
   configureFlags = "--libexecdir=$(out)/libexec/polkit-1";
 
@@ -35,6 +37,11 @@ stdenv.mkDerivation rec {
     ( map (var: ''-DPACKAGE_${var}_DIR=\""${builtins.getAttr var foolVars}"\"'')
         (builtins.attrNames foolVars) );
 
+  preConfigure = ''
+    export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${spidermonkey}/include/js"
+    export NIX_LDFLAGS="$NIX_LDFLAGS -lmozjs185"
+  '';
+
   preBuild =
     ''
       # ‘libpolkit-agent-1.so’ should call the setuid wrapper on
@@ -42,6 +49,9 @@ stdenv.mkDerivation rec {
       # call through $PATH, but that might have security implications.
       substituteInPlace src/polkitagent/polkitagentsession.c \
         --replace PACKAGE_LIBEXEC_DIR '"/var/setuid-wrappers"'
+
+      substituteInPlace src/polkitbackend/toarray.pl \
+        --replace /usr/bin/perl ${perl}/bin/perl
     '';
 
   makeFlags =
