@@ -22,37 +22,60 @@ rec {
     ];
 
   configureFlags = [
-    "--help"
-
-    "--enable-3D-transforms"
-    "--enable-web-sockets"
-    "--enable-web-timing"
-    
-    "--enable-geolocation"
-
-    # Not implemented?
-    #"--enable-web-audio"
-
-    "--enable-mathml"
-
-    #"--enable-wml"
-    
-    # https://bugs.webkit.org/show_bug.cgi?id=45110
-    #"--enable-indexed-database"
-
-    # Doesn't work in release...
-    #"--enable-xhtmlmp"
-
-    # "--enable-input-speech"
-
-    "--enable-file-writer"
-    "--enable-blob"
-
-    # https://bugs.webkit.org/show_bug.cgi?id=59430
-    #"--enable-directory-upload"
-
-    # https://bugs.webkit.org/show_bug.cgi?id=58443
-    #"--enable-file-system"
+      "--enable-spellcheck"
+      "--enable-webgl"
+      "--enable-channel-messaging"
+      "--enable-notifications"
+      "--enable-meter-tag"
+      "--enable-microdata"
+      "--enable-page-visibility-api"
+      "--enable-progress-tag"
+      "--enable-javascript-debugger"
+      "--enable-gamepad"
+      "--enable-datagrid"
+      "--enable-data-transfer-items"
+      "--enable-mutation-observers"
+      "--enable-dom-storage"
+      "--enable-indexed-database"
+      "--enable-input-color"
+      "--enable-input-speech"
+      "--enable-sql-database"
+      "--enable-icon-database"
+      "--enable-image-resizer"
+      "--enable-datalist"
+      "--enable-sandbox"
+      "--enable-video"
+      "--enable-video-track"
+      "--enable-media-source"
+      "--enable-media-statistics"
+      "--enable-fullscreen-api"
+      "--enable-media-stream"
+      "--enable-xslt"
+      "--enable-geolocation"
+      "--enable-mathml"
+      "--enable-mhtml"
+      "--enable-svg"
+      "--enable-shadow-dom"
+      "--enable-shared-workers"
+      "--enable-workers"
+      "--enable-directory-upload"
+      "--enable-file-system"
+      "--enable-style-scoped"
+      "--enable-quota"
+      "--enable-filters"
+      "--enable-svg-fonts"
+      "--enable-web-sockets"
+      "--enable-web-audio"
+      "--enable-web-timing"
+      "--enable-blob"
+      "--enable-fast-mobile-scrolling"
+      "--enable-jit"
+      "--enable-introspection"
+      "--enable-animation-api"
+      "--enable-request-animation-frame"
+      "--enable-touch-icon-loading"
+      "--enable-register-protocol-handler"
+      "--enable-plugin-process"
     ];
 
   /* doConfigure should be specified separately */
@@ -61,7 +84,15 @@ rec {
 
   setVars = fullDepEntry (''
     export NIX_LDFLAGS="$NIX_LDFLAGS -lXt"
-  '') ["minInit"];
+
+    for i in glib-2.0 gio-unix-2.0; do
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE $(pkg-config $i --cflags)"
+    done
+
+    echo "$NIX_CFLAGS_COMPILE"
+
+    export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${glib}/include/glib-2.0 -I ${glib}/include/gio-unix-2.0"
+  '') ["minInit" "addInputs"];
 
   doReplaceUsrBin = fullDepEntry (''
     for i in $(find . -name '*.pl') $(find . -name '*.pm'); do 
