@@ -3571,6 +3571,7 @@ let
         glib = glib_2_32;
         dbus_glib = dbus_glib_0_100;
 	gtk3 = gtk3_4;
+        polkit = polkit_0_107;
       };
     };
   };
@@ -3733,6 +3734,9 @@ let
       callPackage ../development/libraries/gmp/4.3.2.nix { };
 
   gobjectIntrospection = callPackage ../development/libraries/gobject-introspection { };
+  gobjectIntrospection_1_32 = callPackage ../development/libraries/gobject-introspection/1.32.nix { 
+    glib = glib_2_32;
+  };
 
   goffice = callPackage ../development/libraries/goffice {
     inherit (gnome) libglade libgnomeui;
@@ -4687,6 +4691,10 @@ let
   podofo = callPackage ../development/libraries/podofo { };
 
   polkit = callPackage ../development/libraries/polkit { };
+  polkit_0_107 = callPackage ../development/libraries/polkit/0.107.nix { 
+    glib = glib_2_32;
+    gobjectIntrospection = gobjectIntrospection_1_32;
+  };
 
   polkit_qt_1 = callPackage ../development/libraries/polkit-qt-1 { };
 
@@ -5413,6 +5421,7 @@ let
       glib = glib_2_32;
       dbus_glib = dbus_glib_0_100;
       gtk3 = gtk_3_4;
+      polkit = polkit_0_107;
     };
     # The following are disabled in the default build, because if this
     # functionality is desired, they are only needed in the PulseAudio
