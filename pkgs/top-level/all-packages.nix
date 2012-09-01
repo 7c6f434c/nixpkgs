@@ -4327,6 +4327,9 @@ let
   libsndfile = callPackage ../development/libraries/libsndfile { };
 
   libsoup = callPackage ../development/libraries/libsoup { };
+  libsoup_2_38 = callPackage ../development/libraries/libsoup/2.38.nix {
+    glib = glib_2_32;
+  };
 
   libssh = callPackage ../development/libraries/libssh { };
 
@@ -4961,14 +4964,12 @@ let
       pango = pango_1_30;
       inherit freetype fontconfig gettext gperf curl
         libjpeg libtiff libxml2 libxslt sqlite
-        icu intltool automake libtool
+        icu intltool automake libtool perl
         pkgconfig autoconf bison libproxy enchant
-        python ruby which flex geoclue;
+        python ruby which flex geoclue libpng;
       inherit gstreamer gst_plugins_base gst_ffmpeg
         gst_plugins_good;
       inherit (xlibs) libXt renderproto libXrender kbproto;
-      libpng = libpng12;
-      perl = perl510;
     };
 
   webkit_gtk2 =
