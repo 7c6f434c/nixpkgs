@@ -14,7 +14,7 @@ rec {
     sqlite icu gperf bison flex autoconf automake libtool 
     perl intltool pkgconfig libsoup gtkdoc libXt libproxy
     enchant python ruby which renderproto libXrender geoclue
-    kbproto
+    kbproto mesa gobjectIntrospection
     ];
 
   propagatedBuildInputs = [
@@ -79,7 +79,7 @@ rec {
     ];
 
   /* doConfigure should be specified separately */
-  phaseNames = ["setVars" /* "paranoidFixComments" */ "doConfigure" (doPatchShebangs ".") 
+  phaseNames = ["setVars" "fixGstreamerVersion" /* "paranoidFixComments" */ "doConfigure" (doPatchShebangs ".") 
     "doReplaceUsrBin" "doMakeInstall" "doAddPrograms"];
 
   setVars = fullDepEntry (''
@@ -110,6 +110,10 @@ rec {
   paranoidFixComments = fullDepEntry (''
     sed -re 's@( |^)//.*@/* & */@' -i $(find . -name '*.c' -o -name '*.h')
   '') ["minInit" "doUnpack"];
+
+  fixGstreamerVersion = fullDepEntry ''
+    sed -e 's/=GSTREAMER/=$GSTREAMER/g' -i configure
+  '' ["minInit" "doUnpack"];
 
   name = s.name;
   meta = {

@@ -5007,11 +5007,12 @@ let
       cairo = cairo_1_12;
       pango = pango_1_30;
       libsoup = libsoup_2_38;
+      gobjectIntrospection = gobjectIntrospection_1_32;
       inherit freetype fontconfig gettext gperf curl
         libjpeg libtiff libxml2 libxslt sqlite
         icu intltool automake libtool perl
         pkgconfig autoconf bison libproxy
-        python ruby which flex libpng;
+        python ruby which flex libpng mesa;
       geoclue = geoclue_glib_2_32;
       gstreamer = gstreamer_;
       gst_plugins_base = gst_plugins_base_;
