@@ -3438,6 +3438,9 @@ let
   dbus_cplusplus = callPackage ../development/libraries/dbus-cplusplus { };
 
   dbus_glib = callPackage ../development/libraries/dbus-glib { };
+  dbus_glib_0_100 = callPackage ../development/libraries/dbus-glib/0.100.nix { 
+    glib = glib_2_32;
+  };
 
   dbus_java = callPackage ../development/libraries/java/dbus-java { };
 
@@ -3560,6 +3563,17 @@ let
     #  avocodec avformat librsvg
   };
   geoclue = callPackage ../development/libraries/geoclue {};
+  geoclue_glib_2_32 = callPackage ../development/libraries/geoclue {
+    glib = glib_2_32;
+    dbus_glib = dbus_glib_0_100;
+    gnome = {
+      GConf = GConf3.override {
+        glib = glib_2_32;
+        dbus_glib = dbus_glib_0_100;
+	gtk3 = gtk3_4;
+      };
+    };
+  };
 
   geoip = builderDefsPackage ../development/libraries/geoip {
     inherit zlib;
@@ -4962,20 +4976,37 @@ let
   };
 
   webkit =
+    let
+      gstreamer_ = gstreamer.override {
+        glib = glib_2_32;
+      };
+      gst_plugins_base_ = gst_plugins_base.override {
+        glib = glib_2_32;
+	gstreamer = gstreamer_;
+      };
+    in
     builderDefsPackage ../development/libraries/webkit {
-      inherit (gnome) gtkdoc libsoup;
+      inherit (gnome) gtkdoc;
       atk = atk_2_4;
       glib = glib_2_32;
       gtk = gtk3_4;
       cairo = cairo_1_12;
       pango = pango_1_30;
+      libsoup = libsoup_2_38;
       inherit freetype fontconfig gettext gperf curl
         libjpeg libtiff libxml2 libxslt sqlite
         icu intltool automake libtool perl
         pkgconfig autoconf bison libproxy enchant
         python ruby which flex geoclue libpng;
-      inherit gstreamer gst_plugins_base gst_ffmpeg
-        gst_plugins_good;
+      gstreamer = gstreamer_;
+      gst_plugins_base = gst_plugins_base_;
+      gst_plugins_good = gst_plugins_good.override {
+        glib = glib_2_32;
+	gstreamer = gstreamer_;
+      };
+      gst_ffmpeg = gst_ffmpeg.override {
+        gst_plugins_base = gst_plugins_base_;
+      };
       inherit (xlibs) libXt renderproto libXrender kbproto;
     };
 
