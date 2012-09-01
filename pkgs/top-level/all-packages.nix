@@ -4309,6 +4309,9 @@ let
   liboggz = callPackage ../development/libraries/liboggz { };
 
   liboil = callPackage ../development/libraries/liboil { };
+  liboil_0_3_17 = callPackage ../development/libraries/liboil/0.3.17.nix { 
+    glib = glib_2_32;
+  };
 
   liboop = callPackage ../development/libraries/liboop { };
 
@@ -4992,6 +4995,7 @@ let
         glib = glib_2_32;
 	gstreamer = gstreamer_;
 	pango = pango_1_30;
+	liboil = liboil_0_3_17;
       };
     in
     builderDefsPackage ../development/libraries/webkit {
