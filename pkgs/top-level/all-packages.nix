@@ -4983,6 +4983,7 @@ let
       gst_plugins_base_ = gst_plugins_base.override {
         glib = glib_2_32;
 	gstreamer = gstreamer_;
+	pango = pango_1_30;
       };
     in
     builderDefsPackage ../development/libraries/webkit {
@@ -4997,12 +4998,16 @@ let
         libjpeg libtiff libxml2 libxslt sqlite
         icu intltool automake libtool perl
         pkgconfig autoconf bison libproxy enchant
-        python ruby which flex geoclue libpng;
+        python ruby which flex libpng;
+      geoclue = geoclue_glib_2_32;
       gstreamer = gstreamer_;
       gst_plugins_base = gst_plugins_base_;
       gst_plugins_good = gst_plugins_good.override {
         glib = glib_2_32;
 	gstreamer = gstreamer_;
+	cairo = cairo_1_12;
+	pulseaudio = pulseaudio_2_1;
+	gst_plugins_base = gst_plugins_base_;
       };
       gst_ffmpeg = gst_ffmpeg.override {
         gst_plugins_base = gst_plugins_base_;
@@ -5399,6 +5404,20 @@ let
     # The following are disabled in the default build, because if this
     # functionality is desired, they are only needed in the PulseAudio
     # server.
+    bluez = null;
+    avahi = null;
+  };
+
+  pulseaudio_2_1 = callPackage ../servers/pulseaudio/2.1.nix {
+    gconf = GConf3.override {
+      glib = glib_2_32;
+      dbus_glib = dbus_glib_0_100;
+      gtk3 = gtk_3_4;
+    };
+    # The following are disabled in the default build, because if this
+    # functionality is desired, they are only needed in the PulseAudio
+    # server.
+    glib = glib_2_32;
     bluez = null;
     avahi = null;
   };
