@@ -3814,6 +3814,9 @@ let
   glibmm = callPackage ../development/libraries/glibmm/2.30.x.nix { };
 
   glib_networking = callPackage ../development/libraries/glib-networking {};
+  glib_networking_2_32 = callPackage ../development/libraries/glib-networking/2.32.nix {
+    glib = glib_2_32;
+  };
 
   atk = callPackage ../development/libraries/atk/2.2.x.nix { };
 
