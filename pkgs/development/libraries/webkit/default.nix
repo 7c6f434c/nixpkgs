@@ -25,7 +25,7 @@ rec {
       "--enable-spellcheck"
       "--enable-webgl"
       "--enable-channel-messaging"
-      "--enable-notifications"
+      #"--enable-notifications"
       "--enable-meter-tag"
       "--enable-microdata"
       "--enable-page-visibility-api"
@@ -44,12 +44,14 @@ rec {
       "--enable-image-resizer"
       "--enable-datalist"
       "--enable-sandbox"
-      "--enable-video"
-      "--enable-video-track"
-      "--enable-media-source"
-      "--enable-media-statistics"
+
+      "--disable-video"
+      #"--enable-video"
+      #"--enable-video-track"
+      #"--enable-media-source"
+      #"--enable-media-statistics"
       "--enable-fullscreen-api"
-      "--enable-media-stream"
+      #"--enable-media-stream"
       "--enable-xslt"
       "--enable-geolocation"
       "--enable-mathml"
@@ -79,7 +81,7 @@ rec {
     ];
 
   /* doConfigure should be specified separately */
-  phaseNames = ["setVars" "fixGstreamerVersion" /* "paranoidFixComments" */ "doConfigure" (doPatchShebangs ".") 
+  phaseNames = ["setVars" "fixGstreamerVersion" "fixIncludes" /* "paranoidFixComments" */ "doConfigure" (doPatchShebangs ".") 
     "doReplaceUsrBin" "doMakeInstall" "doAddPrograms"];
 
   setVars = fullDepEntry (''
@@ -113,6 +115,9 @@ rec {
 
   fixGstreamerVersion = fullDepEntry ''
     sed -e 's/=GSTREAMER/=$GSTREAMER/g' -i configure
+  '' ["minInit" "doUnpack"];
+
+  fixIncludes = fullDepEntry ''
   '' ["minInit" "doUnpack"];
 
   name = s.name;

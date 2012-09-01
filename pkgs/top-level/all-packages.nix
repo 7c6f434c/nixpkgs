@@ -3828,12 +3828,16 @@ let
   glib = callPackage ../development/libraries/glib/2.30.x.nix { };
 
   glib_2_32 = callPackage ../development/libraries/glib/2.32.x.nix { };
+  glib_2_33 = callPackage ../development/libraries/glib/2.33.x.nix { };
 
   glibmm = callPackage ../development/libraries/glibmm/2.30.x.nix { };
 
   glib_networking = callPackage ../development/libraries/glib-networking {};
   glib_networking_2_32 = callPackage ../development/libraries/glib-networking/2.32.nix {
     glib = glib_2_32;
+  };
+  glib_networking_2_33 = callPackage ../development/libraries/glib-networking/2.33.nix {
+    glib = glib_2_33;
   };
 
   atk = callPackage ../development/libraries/atk/2.2.x.nix { };
@@ -4358,6 +4362,14 @@ let
       glib = glib_2_32;
     };
   };
+  libsoup_2_39 = callPackage ../development/libraries/libsoup/2.39.nix {
+    glib = glib_2_33;
+    glib_networking = glib_networking_2_33;
+    libgnome_keyring = libgnome_keyring3.override{
+      glib = glib_2_33;
+    };
+  };
+
 
   libssh = callPackage ../development/libraries/libssh { };
 
@@ -5032,6 +5044,51 @@ let
       inherit (xlibs) libXt renderproto libXrender kbproto;
     };
 
+  webkitSVN =
+    let
+      gstreamer_ = gstreamer.override {
+        glib = glib_2_32;
+      };
+      gst_plugins_base_ = gst_plugins_base.override {
+        glib = glib_2_32;
+	gstreamer = gstreamer_;
+	pango = pango_1_30;
+	liboil = liboil_0_3_17;
+      };
+    in
+    builderDefsPackage ../development/libraries/webkit/svn.nix {
+      inherit (gnome) gtkdoc;
+      atk = atk_2_4;
+      glib = glib_2_32;
+      gtk = gtk3_4;
+      cairo = cairo_1_12;
+      pango = pango_1_30;
+      libsoup = libsoup_2_39;
+      gobjectIntrospection = gobjectIntrospection_1_32;
+      inherit freetype fontconfig gettext gperf curl
+        libjpeg libtiff libxml2 libxslt sqlite
+        icu intltool automake libtool perl
+        pkgconfig autoconf bison libproxy
+        python ruby which flex libpng mesa;
+      geoclue = geoclue_glib_2_32;
+      gstreamer = gstreamer_;
+      gst_plugins_base = gst_plugins_base_;
+      gst_plugins_good = gst_plugins_good.override {
+        glib = glib_2_32;
+	gstreamer = gstreamer_;
+	cairo = cairo_1_12;
+	pulseaudio = pulseaudio_2_1;
+	gst_plugins_base = gst_plugins_base_;
+      };
+      gst_ffmpeg = gst_ffmpeg.override {
+        gst_plugins_base = gst_plugins_base_;
+      };
+      enchant = enchant.override {
+        glib = glib_2_32;
+      };
+      inherit (xlibs) libXt renderproto libXrender kbproto;
+    };
+
   webkit_gtk2 =
     builderDefsPackage ../development/libraries/webkit/gtk2.nix {
       inherit (gnome) gtkdoc libsoup;
@@ -5046,21 +5103,6 @@ let
       inherit (xlibs) libXt renderproto libXrender;
       libpng = libpng12;
       perl = perl510;
-    };
-
-  webkitSVN =
-    builderDefsPackage ../development/libraries/webkit/svn.nix {
-      inherit (gnome) gtkdoc libsoup;
-      inherit gtk atk pango glib;
-      inherit freetype fontconfig gettext gperf curl
-        libjpeg libtiff libxml2 libxslt sqlite
-        icu cairo perl intltool automake libtool
-        pkgconfig autoconf bison libproxy enchant
-        python ruby which flex geoclue;
-      inherit gstreamer gst_plugins_base gst_ffmpeg
-        gst_plugins_good;
-      inherit (xlibs) libXt renderproto libXrender;
-      libpng = libpng12;
     };
 
   wvstreams = callPackage ../development/libraries/wvstreams { };
