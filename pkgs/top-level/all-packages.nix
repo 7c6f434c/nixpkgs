@@ -4332,6 +4332,10 @@ let
   libsoup = callPackage ../development/libraries/libsoup { };
   libsoup_2_38 = callPackage ../development/libraries/libsoup/2.38.nix {
     glib = glib_2_32;
+    glib_networking = glib_networking_2_32;
+    libgnome_keyring = libgnome_keyring3.override{
+      glib = glib_2_32;
+    };
   };
 
   libssh = callPackage ../development/libraries/libssh { };
