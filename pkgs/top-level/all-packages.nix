@@ -5009,7 +5009,7 @@ let
       inherit freetype fontconfig gettext gperf curl
         libjpeg libtiff libxml2 libxslt sqlite
         icu intltool automake libtool perl
-        pkgconfig autoconf bison libproxy enchant
+        pkgconfig autoconf bison libproxy
         python ruby which flex libpng;
       geoclue = geoclue_glib_2_32;
       gstreamer = gstreamer_;
@@ -5023,6 +5023,9 @@ let
       };
       gst_ffmpeg = gst_ffmpeg.override {
         gst_plugins_base = gst_plugins_base_;
+      };
+      enchant = enchant.override {
+        glib = glib_2_32;
       };
       inherit (xlibs) libXt renderproto libXrender kbproto;
     };
@@ -5431,6 +5434,7 @@ let
     # functionality is desired, they are only needed in the PulseAudio
     # server.
     glib = glib_2_32;
+    udev = udev182;
     bluez = null;
     avahi = null;
   };
