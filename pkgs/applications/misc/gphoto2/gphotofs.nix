@@ -1,33 +1,29 @@
-a :  
-let 
-  fetchurl = a.fetchurl;
-  s = import ./src-info-for-gphotofs.nix;
-
-  version = a.lib.attrByPath ["version"] s.version a; 
-  buildInputs = with a; [
-    libgphoto2 fuse pkgconfig glib
+{stdenv, fetchurl, libgphoto2, fuse, pkgconfig, glib, libtool}:
+let
+  s = # Generated upstream information
+  rec {
+    baseName="gphoto2fs";
+    version="0.5";
+    name="${baseName}-${version}";
+    hash="04slwhr6ap9xcc27wphk22ad8yn79ngyy5z10lxams3k5liahvc2";
+    url="mirror://sourceforge/project/gphoto/gphotofs/0.5.0/gphotofs-0.5.tar.gz";
+    sha256="04slwhr6ap9xcc27wphk22ad8yn79ngyy5z10lxams3k5liahvc2";
+  };
+  buildInputs = [
+    libgphoto2 fuse pkgconfig glib libtool
   ];
 in
-rec {
-  src = fetchurl {
-    url = s.url;
-    sha256 = s.hash;
-  };
-
+stdenv.mkDerivation {
+  inherit (s) name version;
   inherit buildInputs;
-  configureFlags = [];
-
-  /* doConfigure should be removed if not needed */
-  phaseNames = ["doConfigure" "doMakeInstall"];
-      
-  name = "gphoto2fs-" + version;
+  src = fetchurl {
+    inherit (s) url sha256;
+  };
   meta = {
-    description = "Fuse FS to mount a digital camera";
-    maintainers = [
-      a.lib.maintainers.raskin
-    ];
-    platforms = [
-      "i686-linux" "x86_64-linux"
-    ];
+    inherit (s) version;
+    description =  "Fuse FS to mount a digital camera";
+    license = stdenv.lib.licenses.gpl2;
+    maintainers = [stdenv.lib.maintainers.raskin];
+    platforms = stdenv.lib.platforms.linux;
   };
 }

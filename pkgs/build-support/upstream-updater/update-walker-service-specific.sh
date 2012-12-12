@@ -5,5 +5,5 @@ SF_redirect () {
 }
 
 SF_version_dir () {
-  version_link 'http://sourceforge.net/.+/[0-9.]+/$'
+  version_link 'http://sourceforge.net/.+/([-.a-z0-9]+-)?[0-9.]+/$'
 }

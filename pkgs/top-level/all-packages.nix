@@ -784,9 +784,10 @@ let
   glxinfo = callPackage ../tools/graphics/glxinfo { };
 
   gnokii = builderDefsPackage (import ../tools/misc/gnokii) {
-    inherit intltool perl gettext libusb pkgconfig bluez readline pcsclite
+    inherit intltool perl gettext pkgconfig bluez readline pcsclite
       libical gtk glib;
     inherit (xorg) libXpm;
+    libusb = libusb_0_1;
   };
 
   gnugrep =
@@ -1218,7 +1219,9 @@ let
     opensp = opensp.override { stdenv = overrideGCC stdenv gcc33; };
   };
 
-  openobex = callPackage ../tools/bluetooth/openobex { };
+  openobex = callPackage ../tools/bluetooth/openobex { 
+    libusb = libusb_0_1;
+  };
 
   openresolv = callPackage ../tools/networking/openresolv { };
 
@@ -4400,6 +4403,7 @@ let
   libungif = callPackage ../development/libraries/giflib/libungif.nix { };
 
   libusb = callPackage ../development/libraries/libusb { };
+  libusb_0_1 = callPackage ../development/libraries/libusb/0.1.nix { };
 
   libusb1 = callPackage ../development/libraries/libusb1 { };
 
@@ -7114,9 +7118,7 @@ let
 
   gphoto2 = callPackage ../applications/misc/gphoto2 { };
 
-  gphoto2fs = builderDefsPackage ../applications/misc/gphoto2/gphotofs.nix {
-    inherit libgphoto2 fuse pkgconfig glib;
-  };
+  gphoto2fs = callPackage ../applications/misc/gphoto2/gphotofs.nix { };
 
   graphicsmagick = callPackage ../applications/graphics/graphicsmagick { };
 
@@ -8939,6 +8941,7 @@ let
   saneBackends = callPackage ../applications/graphics/sane/backends.nix {
     gt68xxFirmware = config.sane.gt68xxFirmware or null;
     hotplugSupport = config.sane.hotplugSupport or true;
+    libusb = libusb_0_1;
   };
 
   saneBackendsGit = callPackage ../applications/graphics/sane/backends-git.nix {
