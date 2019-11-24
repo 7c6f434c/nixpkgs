@@ -141,6 +141,23 @@ in
 
     };
 
+    environment.staticEtc = mkOption {
+      default = false;
+      type = types.bool;
+      internal = true;
+      description = ''
+        Make <filename>/etc</filename> just a static symlink to the
+        <filename>/etc</filename> content in store.
+
+        If false, <filename>/etc/static</filename> is a symlink to store,
+        and <filename>/etc</filename> contains symlinks into
+        <filename>/etc/static</filename> and also writeable files.
+
+        Note that in the current situation this will definitely lock you
+        out of your system.
+      '';
+    };
+
   };
 
 
@@ -150,12 +167,31 @@ in
 
     system.build.etc = etc;
 
+    environment.etc.machine-id = mkIf config.environment.staticEtc {
+      source = "/var/etc/machine-id";
+    };
+    environment.etc."resolv.conf" = mkIf config.environment.staticEtc {
+      source = "/var/etc/resolv.conf";
+    };
+
     system.activationScripts.etc = stringAfter [ "users" "groups" ]
+      (if config.environment.staticEtc then
+      ''
+        # Set up the static /etc.
+        echo "setting up static /etc..."
+        if test -d /etc; then
+          mv /etc /etc.old-$(date +%Y%m%d-%H%M%S)
+        fi
+        ln -sfT ${etc}/etc /etc.new
+        mv /etc.new /etc
+        mkdir /var/etc
+      ''
+      else
       ''
         # Set up the statically computed bits of /etc.
         echo "setting up /etc..."
         ${pkgs.perl}/bin/perl -I${pkgs.perlPackages.FileSlurp}/${pkgs.perl.libPrefix} ${./setup-etc.pl} ${etc}/etc
-      '';
+      '');
 
   };
 

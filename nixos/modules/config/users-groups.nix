@@ -379,6 +379,54 @@ let
   uidsAreUnique = idsAreUnique (filterAttrs (n: u: u.uid != null) cfg.users) "uid";
   gidsAreUnique = idsAreUnique (filterAttrs (n: g: g.gid != null) cfg.groups) "gid";
 
+  findFreeId = n: used: if used ? ${n} then findFreeId (n + 1) used else n;
+
+  fillIds = used: idName: startId: entries:
+  let e = head entries;
+      id = if (builtins.hasAttr idName e) then e.${idName}
+            else findFreeId (startId ) used;
+      newe = e // { ${idName} = id; };
+      newused = used // { ${id} = true; };
+  in
+    if entries == [] then [] else
+      [ newe ] ++ fillIds newused idName startId (builtins.tail entries);
+  usersSorted = lib.sort (x: y: x.name < y.name)
+              (lib.mapAttrsToList (n: u: u // { name = n; }) cfg.users);
+  groupsSorted = lib.sort (x: y: x.name < y.name)
+              (lib.mapAttrsToList (n: g: g // { name = n; }) cfg.groups);
+  filledUidList = fillIds {} "uid"
+    (u: if u.isSystemUser then 400 else 1000) usersSorted;
+  filledGidList = fillIds {} "gid" (g: 0) groupsSorted;
+  usersWithIds = lib.listToAttrs
+    (builtins.map (u: { name = u.name; value = u; }) filledUidList);
+  groupsWithIds = lib.listToAttrs
+    (builtins.map (u: { name = u.name; value = u; }) filledGidList);
+
+  passwdLine = u:
+  [ u.name "x" usersWithIds.${u.name}.uid
+    groupsWithIds.${u.group}.gid u.description
+  ];
+  shadowLine = u:
+  let hp = u.hashedPassword or "!";
+  in
+  [ u.name (if hp == null then "!" else hp)
+    1 "" "" "" "" "" ""
+  ];
+  groupLine = g:
+  [ g.name "x" groupsWithIds.${g.name}.gid (groupMembers.${g.name} or [])
+  ];
+
+  groupMembers = lib.foldl
+    (acc: u: acc //
+      (lib.foldl
+        (acc: g: acc // { ${g} = (acc.${g} or []) ++ [u.name]; })
+        acc u.extraGroups))
+    {} usersSorted;
+
+  groupToId = lib.listToAttrs
+    (lib.sort
+    (lib.map (g: { name = g.name; value = g.gid; }) cfg.groups));
+
   spec = pkgs.writeText "users-groups.json" (builtins.toJSON {
     inherit (cfg) mutableUsers;
     users = mapAttrsToList (_: u:
@@ -438,6 +486,17 @@ in {
       default = true;
       description = ''
         Whether to require that no two users/groups share the same uid/gid.
+      '';
+    };
+
+    users.staticAuthFiles = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Whether to prebuild <filename>/etc/passwd</filename>,
+        <filename>/etc/group</filename> and <filename>/etc/shadow</filename>.
+
+        Conflicts with <option>users.mutableUsers</option>.
       '';
     };
 
@@ -529,15 +588,24 @@ in {
     };
 
     system.activationScripts.users = stringAfter [ "stdio" ]
-      ''
+      (''
         install -m 0700 -d /root
         install -m 0755 -d /home
-
+      ''
+      +
+      (if cfg.staticAuthFiles then
+        (concatStringsSep "\n"
+          (builtins.map
+            (u: if u.createHome then
+                  ''install -m 0700 -d ${u.home} -o ${builtins.toString u.uid} -g ${builtins.toString groupsWithIds.${u.group}.gid}''
+                else "") filledUidList))
+      else
+      ''
         ${pkgs.perl}/bin/perl -w \
           -I${pkgs.perlPackages.FileSlurp}/${pkgs.perl.libPrefix} \
           -I${pkgs.perlPackages.JSON}/${pkgs.perl.libPrefix} \
           ${./update-users-groups.pl} ${spec}
-      '';
+      ''));
 
     # for backwards compatibility
     system.activationScripts.groups = stringAfter [ "users" ] "";
@@ -553,6 +621,24 @@ in {
       subgid = {
         text = subgidFile;
         mode = "0644";
+      };
+      passwd = mkIf cfg.staticAuthFiles {
+        text = lib.concatStringsSep "\n"
+          (builtins.map
+            (u: lib.concatStringsSep ":" (builtins.map builtins.toString (passwdLine u)))
+            usersSorted);
+      };
+      shadow = mkIf cfg.staticAuthFiles {
+        text = lib.concatStringsSep "\n"
+          (builtins.map
+            (u: lib.concatStringsSep ":" (builtins.map builtins.toString (shadowLine u)))
+            usersSorted);
+      };
+      group = mkIf cfg.staticAuthFiles {
+        text = lib.concatStringsSep "\n"
+          (builtins.map
+            (g: lib.concatStringsSep ":" (builtins.map builtins.toString (groupLine g)))
+            groupsSorted);
       };
     } // (mapAttrs' (name: { packages, ... }: {
       name = "profiles/per-user/${name}";
@@ -593,6 +679,11 @@ in {
         message = ''
           Neither the root account nor any wheel user has a password or SSH authorized key.
           You must set one to prevent being locked out of your system.'';
+      }
+      { assertion = cfg.staticAuthFiles -> !cfg.mutableUsers;
+        message = ''
+          It is impossible to prebuild the authentication data with mutable user accounts.
+        '';
       }
     ];
 
