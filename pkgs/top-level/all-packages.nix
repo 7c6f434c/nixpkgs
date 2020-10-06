@@ -12009,7 +12009,7 @@ in
 
   boost_process = callPackage ../development/libraries/boost-process { };
 
-  botan = callPackage ../development/libraries/botan { openssl = openssl_1_0_2; };
+  botan = callPackage ../development/libraries/botan { openssl = null; };
   botan2 = callPackage ../development/libraries/botan/2.0.nix { };
 
   box2d = callPackage ../development/libraries/box2d { };

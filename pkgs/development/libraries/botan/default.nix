@@ -1,11 +1,11 @@
 { callPackage, ... } @ args:
 
 callPackage ./generic.nix (args // {
-  baseVersion = "1.10";
-  revision = "17";
-  sha256 = "04rnha712dd3sdb2q7k2yw45sf405jyigk7yrjfr6bwd9fvgyiv8";
-  extraConfigureFlags = "--with-gnump";
+  baseVersion = "1.11";
+  revision = "34";
+  sha256 = "sha256:05hzffp0dxac7414a84z0fgv980cnfx55ch2y4vpg5nvin7m9bar";
   postPatch = ''
     sed -e 's@lang_flags "@&--std=c++11 @' -i src/build-data/cc/{gcc,clang}.txt
+    sed -e '1i#include <functional>' -i src/lib/filters/threaded_fork.cpp
   '';
 })
