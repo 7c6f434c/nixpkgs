@@ -4,15 +4,15 @@
 { stdenv, fetchFromGitHub }:
 
 stdenv.mkDerivation rec {
-  version = "2020-10-05";
+  version = "2020-10-09";
   pname = "oh-my-zsh";
-  rev = "6ebf27b8d34c760e25749790ea78dcb0c220d76b";
+  rev = "1bb402190d53c118f47a0851f5714dd4faa52809";
 
   src = fetchFromGitHub {
     inherit rev;
     owner = "ohmyzsh";
     repo = "ohmyzsh";
-    sha256 = "0x53mf9lys15x86sc8kgf3y05jkhdszqrywf0mlv00n9kjzbkv5s";
+    sha256 = "0alm6253mz8yq5l17q7hj89aa0c0nfknds9vqx8pd619bsa6kf4g";
   };
 
   installPhase = ''
@@ -66,18 +66,18 @@ stdenv.mkDerivation rec {
   '';
 
   meta = with stdenv.lib; {
-  description     = "A framework for managing your zsh configuration";
-  longDescription = ''
-  Oh My Zsh is a framework for managing your zsh configuration.
+    description = "A framework for managing your zsh configuration";
+    longDescription = ''
+      Oh My Zsh is a framework for managing your zsh configuration.
 
-  To copy the Oh My Zsh configuration file to your home directory, run
-  the following command:
+      To copy the Oh My Zsh configuration file to your home directory, run
+      the following command:
 
-    $ cp -v $(nix-env -q --out-path oh-my-zsh | cut -d' ' -f3)/share/oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
-  '';
-  homepage        = "https://ohmyz.sh/";
-  license         = licenses.mit;
-  platforms       = platforms.all;
-  maintainers     = with maintainers; [ scolobb nequissimus ];
+        $ cp -v $(nix-env -q --out-path oh-my-zsh | cut -d' ' -f3)/share/oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
+    '';
+    homepage = "https://ohmyz.sh/";
+    license = licenses.mit;
+    platforms = platforms.all;
+    maintainers = with maintainers; [ scolobb nequissimus ];
   };
 }

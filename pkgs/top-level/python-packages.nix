@@ -768,7 +768,7 @@ in {
 
   bandit = callPackage ../development/python-modules/bandit { };
 
-  bap = callPackage ../development/python-modules/bap { bap = pkgs.ocaml-ng.ocamlPackages_4_06.bap; };
+  bap = callPackage ../development/python-modules/bap { bap = pkgs.ocaml-ng.ocamlPackages_4_07.bap; };
 
   base58 = callPackage ../development/python-modules/base58 { };
 
@@ -4050,6 +4050,8 @@ in {
 
   nose-focus = callPackage ../development/python-modules/nose-focus { };
 
+  nose-timer = callPackage ../development/python-modules/nose-timer { };
+
   nosejs = callPackage ../development/python-modules/nosejs { };
 
   nose-of-yeti = callPackage ../development/python-modules/nose-of-yeti { };
@@ -4498,6 +4500,8 @@ in {
 
   pkuseg = callPackage ../development/python-modules/pkuseg { };
 
+  python-csxcad = callPackage ../development/python-modules/python-csxcad { };
+
   pkutils = callPackage ../development/python-modules/pkutils { };
 
   plac = callPackage ../development/python-modules/plac { };
@@ -4892,8 +4896,6 @@ in {
   pydocumentdb = callPackage ../development/python-modules/pydocumentdb { };
 
   pydot = callPackage ../development/python-modules/pydot { inherit (pkgs) graphviz; };
-
-  pydot_ng = callPackage ../development/python-modules/pydot_ng { graphviz = pkgs.graphviz; };
 
   pydotplus = callPackage ../development/python-modules/pydotplus { };
 
@@ -6715,6 +6717,8 @@ in {
     callPackage ../development/python-modules/sphinx { }
   else
     callPackage ../development/python-modules/sphinx/2.nix { };
+
+  sphinx-argparse = callPackage ../development/python-modules/sphinx-argparse { };
 
   sphinx-jinja = callPackage ../development/python-modules/sphinx-jinja { };
 
