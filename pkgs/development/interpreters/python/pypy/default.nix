@@ -57,7 +57,7 @@ in with passthru; stdenv.mkDerivation rec {
   ] ++ optionals (stdenv ? cc && stdenv.cc.libc != null) [
     stdenv.cc.libc
   ] ++ optionals zlibSupport [
-    zlib
+    (if isPy3k then (lib.overrideDerivation zlib (x: {patches = [./zlib/fix-configure-issue-cross.patch];})) else zlib)
   ] ++ optionals stdenv.isDarwin [
     libunwind Security
   ];
