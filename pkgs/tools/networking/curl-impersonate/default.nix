@@ -25,13 +25,13 @@
 let
   makeCurlImpersonate = { name, target }: stdenv.mkDerivation rec {
     pname = "curl-impersonate-${name}";
-    version = "0.5.4";
+    version = "0.6.0b9";
 
     src = fetchFromGitHub {
-      owner = "lwthiker";
+      owner = "yifeikong";
       repo = "curl-impersonate";
       rev = "v${version}";
-      hash = "sha256-LBGWFal2szqgURIBCLB84kHWpdpt5quvBBZu6buGj2A=";
+      hash = "sha256-v8er8bvq24V6wavK6l4M7cZpwo1Muu/vrFTh7EW7UXE=";
     };
 
     patches = [
@@ -131,6 +131,8 @@ let
 
     disallowedReferences = [ go ];
 
+    NIX_CFLAGS_COMPILE = [ "-Wno-error" ];
+
     passthru = {
       deps = callPackage ./deps.nix {};
 
@@ -138,7 +140,7 @@ let
         inherit (passthru.deps."boringssl.zip") name;
 
         src = passthru.deps."boringssl.zip";
-        vendorHash = "sha256-ISmRdumckvSu7hBXrjvs5ZApShDiGLdD3T5B0fJ1x2Q=";
+        vendorHash = "sha256-EJPcx07WuvHPAgiS1ASU6WHlHkxjUOO72if4TkmrqwY=";
 
         nativeBuildInputs = [ unzip ];
 
