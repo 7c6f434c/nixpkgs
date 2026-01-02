@@ -42,6 +42,8 @@ stdenv.mkDerivation rec {
     substituteInPlace src/main.c --replace-fail '"fig2dev"' '"${fig2dev}/bin/fig2dev"'
   '';
 
+  env.NIX_CFLAGS_COMPILE = " --std=gnu17 ";
+
   postInstall = ''
     mkdir -p $out/share/X11/app-defaults
     cp app-defaults/* $out/share/X11/app-defaults
