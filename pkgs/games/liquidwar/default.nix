@@ -12,6 +12,7 @@
   gettext,
   perl,
   guile,
+  boehmgc,
   SDL,
   SDL_image,
   SDL_mixer,
@@ -26,7 +27,21 @@
   csound,
   cunit,
   pkg-config,
+  runCommand,
 }:
+
+let
+  fake_guile_2_0 = runCommand "fake-guile-2.0" { } ''
+    mkdir -p "$out"/{bin,lib,include/guile}
+    ln -s "${lib.getBin guile}"/bin/guile* "$out"/bin
+    ln -s "${lib.getLib guile}"/lib/lib* "$out"/lib
+    ln -s "${lib.getLib guile}"/lib/libguile-?.?.so "$out"/lib/libguile-2.0.so
+    ln -s "${lib.getLib guile}"/lib/libguile-?.?.so "$out"/lib/libguile.so
+    ln -s "${lib.getDev guile}"/include/guile/* "$out/include/guile/2.0"
+    ln -s "${lib.getDev guile}"/include/guile/* "$out/include/guile/"
+    ln -s "${lib.getDev guile}"/include/guile/*/* "$out/include/"
+  '';
+in
 
 stdenv.mkDerivation rec {
   pname = "liquidwar6";
@@ -37,11 +52,16 @@ stdenv.mkDerivation rec {
     sha256 = "1976nnl83d8wspjhb5d5ivdvdxgb8lp34wp54jal60z4zad581fn";
   };
 
+  postPatch = ''
+    sed -e 's/\<SCM_LIST0/SCM_EOL/g' -i src/lib/lw6*.c
+  '';
+
   buildInputs = [
     xorgproto
     libX11
     gmp
-    guile
+    fake_guile_2_0
+    boehmgc
     libjpeg
     libpng
     expat
@@ -72,6 +92,7 @@ stdenv.mkDerivation rec {
       # Needed with GCC 12 but problematic with some old GCCs
       "-Wno-error=address"
       "-Wno-error=use-after-free"
+      "-std=gnu17"
     ]
     ++ [
       "-Wno-error=deprecated-declarations"

@@ -12682,9 +12682,7 @@ with pkgs;
     pythonSupport = true;
   };
 
-  liquidwar = callPackage ../games/liquidwar {
-    guile = guile_2_0;
-  };
+  liquidwar = callPackage ../games/liquidwar { };
 
   liquidwar5 = callPackage ../games/liquidwar/5.nix { };
 
